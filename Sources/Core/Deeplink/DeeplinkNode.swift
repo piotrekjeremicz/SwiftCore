@@ -8,9 +8,3 @@
 public protocol DeeplinkNode {
     static var children: [PartialKeyPath<Self>] { get }
 }
-
-extension DeeplinkNode {
-    public static var children: [PartialKeyPath<Self>] { [] }
-}
-
-public struct Root: DeeplinkNode {}

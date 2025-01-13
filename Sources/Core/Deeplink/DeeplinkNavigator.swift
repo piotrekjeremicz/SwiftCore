@@ -9,41 +9,41 @@ import SwiftUI
 
 @Observable
 public class DeeplinkNavigator {
-    private var registeredViews: [PartialKeyPath<Root>: (_ destination: PartialKeyPath<Root>, _ current: AnyKeyPath) -> AnyKeyPath?] = [:]
+    private var registeredViews: [AnyKeyPath: (_ destination: AnyKeyPath, _ current: AnyKeyPath) -> AnyKeyPath?] = [:]
     
     public init() { }
     
     func registerView(
-        for keyPath: PartialKeyPath<Root>,
-        resolve: @escaping (PartialKeyPath<Root>, AnyKeyPath) -> AnyKeyPath?
+        for keyPath: AnyKeyPath,
+        resolve: @escaping (AnyKeyPath, AnyKeyPath) -> AnyKeyPath?
     ) {
         registeredViews[keyPath] = resolve
     }
     
-    func unregisterView(for keyPath: PartialKeyPath<Root>) {
+    func unregisterView(for keyPath: AnyKeyPath) {
         registeredViews[keyPath] = nil
     }
     
-    public func navigate(to path: PartialKeyPath<Root>) {
-        var currentPath: AnyKeyPath = \Root.self
-        var nodesCount = path.keyPathString.split(separator: ".").count
+    public func navigate<R: DeeplinkNode>(to path: PartialKeyPath<R>) {
+        var currentPath: AnyKeyPath = \R.self
+        var nodesCount = path.keyPathString.split(separator: ".").count - 1
         
         repeat {
             guard let similarPath = registeredViews.first(where: { $0.key == currentPath })
             else {
-                print("Can not find similar path for: \(currentPath)")
+                print("[Deeplink] Can not find similar path for: \(currentPath)")
                 return
             }
             
             guard let nextPath = similarPath.value(path, currentPath)
             else {
-                print("Can not resolve nodePath for: \(currentPath)")
+                print("[Deeplink] Can not resolve nodePath for: \(currentPath)")
                 return
             }
             
             currentPath = nextPath
             nodesCount -= 1
-        } while path.keyPathString == currentPath.keyPathString
+        } while path.keyPathString != currentPath.keyPathString || nodesCount > 0
     }
 }
 

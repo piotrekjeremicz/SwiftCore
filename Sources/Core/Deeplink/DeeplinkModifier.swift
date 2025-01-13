@@ -8,7 +8,7 @@
 import SwiftUI
 
 public struct DeeplinkModifier<Node: DeeplinkNode>: ViewModifier {
-    let keyPath: KeyPath<Root, Node>
+    let keyPath: AnyKeyPath
     let nodeType: Node.Type
     let handler: (PartialKeyPath<Node>) -> Void
     
@@ -32,6 +32,7 @@ extension DeeplinkModifier {
             
             guard let matchedPath, let newPath = currentPath.appending(path: matchedPath)
             else { return nil }
+            handler(matchedPath)
             
             return newPath
         }
@@ -44,7 +45,7 @@ extension DeeplinkModifier {
 
 public extension View {
     func deeplink<Node: DeeplinkNode>(
-        _ keyPath: KeyPath<Root, Node>,
+        _ keyPath: AnyKeyPath,
         node: Node.Type,
         handler: @escaping (PartialKeyPath<Node>) -> Void
     ) -> some View {
@@ -55,11 +56,5 @@ public extension View {
                 handler: handler
             )
         )
-    }
-}
-
-extension AnyKeyPath {
-    var keyPathString: String {
-        String(reflecting: self)
     }
 }
