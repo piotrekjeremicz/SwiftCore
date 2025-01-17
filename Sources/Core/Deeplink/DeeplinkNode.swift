@@ -6,5 +6,7 @@
 //
 
 public protocol DeeplinkNode {
+    associatedtype Payload
+    
     static var children: [PartialKeyPath<Self>] { get }
 }

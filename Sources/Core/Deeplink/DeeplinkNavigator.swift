@@ -9,7 +9,7 @@ import SwiftUI
 
 @Observable
 public class DeeplinkNavigator {
-    private typealias RegistrarValue = (_ destination: AnyKeyPath, _ current: AnyKeyPath, _ withAnimation: Bool) -> AnyKeyPath?
+    private typealias RegistrarValue = (_ destination: AnyKeyPath, _ current: AnyKeyPath, _ withAnimation: Bool, _ payload: Any?) -> AnyKeyPath?
     
     private var registeredViews: [AnyKeyPath: RegistrarValue] = [:]
     
@@ -17,7 +17,7 @@ public class DeeplinkNavigator {
     
     func registerView(
         for keyPath: AnyKeyPath,
-        resolve: @escaping (AnyKeyPath, AnyKeyPath, Bool) -> AnyKeyPath?
+        resolve: @escaping (AnyKeyPath, AnyKeyPath, Bool, Any?) -> AnyKeyPath?
     ) {
         registeredViews[keyPath] = resolve
     }
@@ -26,20 +26,20 @@ public class DeeplinkNavigator {
         registeredViews[keyPath] = nil
     }
     
-    public func navigate<R: DeeplinkNode>(to path: PartialKeyPath<R>, withAnimation animation: Bool = true, completion: VoidClosure? = nil) {
+    public func navigate<R: DeeplinkNode, T: DeeplinkNode>(to path: KeyPath<R, T>, payload: T.Payload? = nil, withAnimation animation: Bool = true, completion: VoidClosure? = nil) {
         Task {
-            await resolve(path, withAnimation: animation)
+            await navigate(to: path, payload: payload, withAnimation: animation)
             completion?()
         }
     }
     
-    public func navigate<R: DeeplinkNode>(to path: PartialKeyPath<R>, withAnimation animation: Bool = true) async {
-        await resolve(path, withAnimation: animation)
+    public func navigate<R: DeeplinkNode, T: DeeplinkNode>(to path: KeyPath<R, T>, payload: T.Payload? = nil, withAnimation animation: Bool = true) async {
+        await resolve(path, payload: payload, withAnimation: animation)
     }
 }
 
 extension DeeplinkNavigator {
-    private func resolve<R: DeeplinkNode>(_ path: PartialKeyPath<R>, withAnimation animation: Bool = true) async {
+    private func resolve<R: DeeplinkNode, T: DeeplinkNode>(_ path: KeyPath<R, T>, payload: T.Payload? = nil, withAnimation animation: Bool = true) async {
         var currentPath: AnyKeyPath = \R.self
         var nodesCount = path.keyPathString.split(separator: ".").count - 1
         
@@ -50,7 +50,7 @@ extension DeeplinkNavigator {
                 return
             }
             
-            guard let nextPath = similarRegistrar(path, currentPath, animation)
+            guard let nextPath = similarRegistrar(path, currentPath, animation, payload)
             else {
                 print("[Deeplink] Can not resolve nodePath for: \(currentPath)")
                 return
