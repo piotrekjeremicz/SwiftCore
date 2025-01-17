@@ -16,14 +16,20 @@ public protocol Routable: AnyObject {
 
 public extension Routable {
     func push(_ route: Route, withAnimation enabled: Bool = true, completion handler: VoidClosure? = nil) {
-        withAnimation(enabled) { [weak self] in
+        withAnimation(enabled, { [weak self] in
             self?.route.append(route)
-        }
+        }, completion: handler)
     }
     
     func pop(withAnimation enabled: Bool = true, completion handler: VoidClosure? = nil) {
-        withAnimation(enabled) { [weak self] in
+        withAnimation(enabled, { [weak self] in
             let _ = self?.route.popLast()
-        }
+        }, completion: handler)
+    }
+    
+    func popToRoot(withAnimation enabled: Bool = true, completion handler: VoidClosure? = nil) {
+        withAnimation(enabled, { [weak self] in
+            self?.route.removeAll()
+        }, completion: handler)
     }
 }

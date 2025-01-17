@@ -28,7 +28,6 @@ public struct UseCaseMacro: MemberMacro {
     ) throws -> [SwiftSyntax.DeclSyntax] {
         let functionDeclarations = declaration.memberBlock.members.compactMap { $0.decl.as(FunctionDeclSyntax.self) }
         
-        
         guard var executeFunctionDeclaration = functionDeclarations.first(where: { $0.name.text == "execute" })
         else { throw UseCaseMacroError.canNotFindExecuteFunction }
         

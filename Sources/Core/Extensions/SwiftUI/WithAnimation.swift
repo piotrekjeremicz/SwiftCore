@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-func withAnimation(_ enabled: Bool = true, _ body: () -> Void, completion: (() -> Void)? = nil) {
+public func withAnimation(_ enabled: Bool = true, _ body: () -> Void, completion: (() -> Void)? = nil) {
     if enabled {
         withAnimation {
             body()
