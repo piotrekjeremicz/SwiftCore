@@ -33,6 +33,10 @@ let package = Package(
             url: "https://github.com/kishikawakatsumi/KeychainAccess.git",
             .upToNextMinor(from: "4.2.0")
         ),
+        .package(
+            url: "https://github.com/apple/swift-async-algorithms",
+            from: "1.0.0"
+        ),
     ],
     targets: [
         .target(
@@ -42,6 +46,7 @@ let package = Package(
                 "KeychainAccess",
                 .product(name: "Networking", package: "swiftynetworking"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "AsyncAlgorithms", package: "swift-async-algorithms")
             ]
         ),
         .macro(
