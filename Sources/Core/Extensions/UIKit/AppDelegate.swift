@@ -5,24 +5,35 @@
 //  Created by Piotrek Jeremicz on 11.11.2024.
 //
 
+import AsyncAlgorithms
 import SwiftUI
 
 @Observable @MainActor
 public class AppDelegate: NSObject, UIApplicationDelegate {
-    private var finishLaunchingWithOptionsClosures = [(UIApplication, [UIApplication.LaunchOptionsKey : Any]?) -> Void]()
-    private var registerForRemoteNotificationsWithDeviceTokenClosures = [(UIApplication, Data) -> Void]()
-    private var failToRegisterForRemoteNotificationsWithErrorClosures = [(UIApplication, Error) -> Void]()
+    public typealias FinishLaunchingWithOptionsClosure = (UIApplication, [UIApplication.LaunchOptionsKey : Any]?) -> Bool
+    public typealias DeviceTokenRegistrationClosure = (UIApplication, Data) -> Void
+    public typealias RemoteNavigationRegistrationFailedClosure = (UIApplication, Error) -> Void
+    public typealias RemoteNotificationReceivedClosure = (UIApplication, [AnyHashable : Any]) async -> UIBackgroundFetchResult
     
-    public func finishLaunchingWithOptions(_ closure: @escaping (UIApplication, [UIApplication.LaunchOptionsKey : Any]?) -> Void) {
+    private var finishLaunchingWithOptionsClosures = [FinishLaunchingWithOptionsClosure]()
+    private var registerForRemoteNotificationsWithDeviceTokenClosures = [DeviceTokenRegistrationClosure]()
+    private var failToRegisterForRemoteNotificationsWithErrorClosures = [RemoteNavigationRegistrationFailedClosure]()
+    private var didReceiveRemoteNotificationClosures = [RemoteNotificationReceivedClosure]()
+    
+    public func finishLaunchingWithOptions(_ closure: @escaping FinishLaunchingWithOptionsClosure) {
         finishLaunchingWithOptionsClosures.append(closure)
     }
     
-    public func registerForRemoteNotificationsWithDeviceToken(_ closure: @escaping (UIApplication, Data) -> Void) {
+    public func registerForRemoteNotificationsWithDeviceToken(_ closure: @escaping DeviceTokenRegistrationClosure) {
         registerForRemoteNotificationsWithDeviceTokenClosures.append(closure)
     }
     
-    public func failToRegisterForRemoteNotificationsWithError(_ closure: @escaping (UIApplication, Error) -> Void) {
+    public func failToRegisterForRemoteNotificationsWithError(_ closure: @escaping RemoteNavigationRegistrationFailedClosure) {
         failToRegisterForRemoteNotificationsWithErrorClosures.append(closure)
+    }
+    
+    public func didReceiveRemoteNotification(_ closure: @escaping RemoteNotificationReceivedClosure) {
+        didReceiveRemoteNotificationClosures.append(closure)
     }
 }
 
@@ -30,9 +41,9 @@ extension AppDelegate {
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         UNUserNotificationCenter.current().delegate = self
         
-        finishLaunchingWithOptionsClosures.forEach { $0(application, launchOptions) }
-        
-        return true
+        return finishLaunchingWithOptionsClosures
+            .map { $0(application, launchOptions) }
+            .contains(false) ? false : true
     }
     
     public func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -45,7 +56,15 @@ extension AppDelegate {
     }
     
     public func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any]) async -> UIBackgroundFetchResult {
-        return .noData
+        var results = [UIBackgroundFetchResult]()
+        
+        for item in didReceiveRemoteNotificationClosures {
+            results.append(await item(application, userInfo))
+        }
+        
+        return results
+            .sorted(by: { $0.rawValue > $1.rawValue })
+            .first ?? .noData
     }
 }
 
