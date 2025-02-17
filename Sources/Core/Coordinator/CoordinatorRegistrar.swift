@@ -14,9 +14,9 @@ public class CoordinatorRegistrar {
         container[item.id] = item
     }
     
-    public func resolve(_ key: Key) -> AnyView? {
-        guard let content = container[key]?.content() else { return nil }
-        return AnyView(content)
+    public func resolve(_ key: Key) -> Item? {
+        guard let item = container[key] else { return nil }
+        return item
     }
     
     public func resolve(for location: Location) -> [Item] {
