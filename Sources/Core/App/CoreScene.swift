@@ -15,6 +15,7 @@ public struct CoreScene<Content, Factor>: Scene where Content: Scene, Factor: Mo
         self.content = content()
         container = .init()
         modules.assemblies.assemble(container: container)
+        Core.Environment.use(container)
     }
     
     public var body: some Scene {
