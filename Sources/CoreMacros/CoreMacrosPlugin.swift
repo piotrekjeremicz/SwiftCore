@@ -12,5 +12,6 @@ import SwiftSyntaxMacros
 struct CoreMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         UseCaseMacro.self,
+        UseCaseProtocolMacro.self
     ]
 }

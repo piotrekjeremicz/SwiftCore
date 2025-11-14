@@ -9,4 +9,7 @@
 @attached(member, names: named(callAsFunction))
 public macro UseCase() = #externalMacro(module: "CoreMacros", type: "UseCaseMacro")
 
+@attached(member, names: named(callAsFunction))
+public macro UseCaseProtocol() = #externalMacro(module: "CoreMacros", type: "UseCaseProtocolMacro")
+
 public protocol UseCase: Sendable { }
