@@ -13,6 +13,10 @@ internal final class Graph: Resolver, @unchecked Sendable {
         self.definitions = container.definitions
     }
     
+    public func resolve<Service: Sendable>() -> Service {
+        resolve(Service.self)
+    }
+    
     public func resolve<Service>(_ serviceType: Service.Type) -> Service where Service: Sendable {
         let id = ObjectIdentifier(serviceType)
         

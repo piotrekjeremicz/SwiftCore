@@ -27,6 +27,10 @@ public final class Container: @unchecked Sendable {
 
 
 extension Container: Resolver {
+    public func resolve<Service: Sendable>() -> Service {
+        resolve(Service.self)
+    }
+    
     public func resolve<Service>(_ serviceType: Service.Type) -> Service where Service: Sendable {
         let id = ObjectIdentifier(serviceType)
         lock.lock(); defer { lock.unlock() }

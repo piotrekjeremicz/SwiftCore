@@ -47,7 +47,7 @@ public class RepositoryRegistrar: Registrar {
 
 public class UseCaseRegistrar: Registrar {
     public let container: Container
-
+    
     init(container: Container) {
         self.container = container
     }

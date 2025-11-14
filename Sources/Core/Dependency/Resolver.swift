@@ -7,6 +7,8 @@
 
 
 public protocol Resolver: Sendable {
+    func resolve<Service: Sendable>() -> Service
+    
     func resolve<Service: Sendable>(
         _ serviceType: Service.Type
     ) -> Service
