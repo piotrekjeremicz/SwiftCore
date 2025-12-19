@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-public final class CoordinatorRegistrar {
+public final class CoordinatorRegistrar: @unchecked Sendable {
     private var container = [Key: Definition]()
 
     public func register(_ definition: Definition) {

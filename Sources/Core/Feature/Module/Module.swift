@@ -10,12 +10,12 @@ public protocol Module {
     
     @AssemblyBuilder var assemblies: Factor { get }
     
-    func resolve(with container: Container)
+    func resolve(with container: Container, coordinatorRegistrar: CoordinatorRegistrar)
 }
 
 public extension Module {
-    func resolve(with container: Container) {
-        assemblies.assemble(container: container)
+    func resolve(with container: Container, coordinatorRegistrar: CoordinatorRegistrar) {
+        assemblies.assemble(container: container, coordinatorRegistrar: coordinatorRegistrar)
     }
 }
 

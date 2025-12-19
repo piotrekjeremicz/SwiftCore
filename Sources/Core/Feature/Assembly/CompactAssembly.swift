@@ -12,9 +12,9 @@ public class CompactAssembly: Assembly {
         self.assemblies = assemblies
     }
     
-    public func assemble(container: Container) {
+    public func assemble(container: Container, coordinatorRegistrar: CoordinatorRegistrar) {
         assemblies.forEach { assembly in
-            assembly.assemble(container: container)
+            assembly.assemble(container: container, coordinatorRegistrar: coordinatorRegistrar)
         }
     }
 }

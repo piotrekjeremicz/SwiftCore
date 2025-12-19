@@ -14,9 +14,9 @@ public class TupleAssembly<T>: Assembly {
 }
 
 public extension TupleAssembly {
-    func assemble(container: Container) {
+    func assemble(container: Container, coordinatorRegistrar: CoordinatorRegistrar) {
         assemblies.forEach { assembly in
-            assembly.assemble(container: container)
+            assembly.assemble(container: container, coordinatorRegistrar: coordinatorRegistrar)
         }
     }
 }

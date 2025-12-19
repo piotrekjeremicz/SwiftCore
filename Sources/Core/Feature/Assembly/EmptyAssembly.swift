@@ -6,5 +6,5 @@
 //
 
 public class EmptyAssembly: Assembly {
-    public func assemble(container: Container) { }
+    public func assemble(container: Container, coordinatorRegistrar: CoordinatorRegistrar) { }
 }
