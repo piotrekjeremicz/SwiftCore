@@ -10,8 +10,8 @@ public struct Dependency<T>: Sendable where T: Sendable {
     public private(set) var wrappedValue: T
     
     public init() {
-        guard let container = Environment.container else {
-            fatalError("❌ InjectContainer not set in InjectEnvironment")
+        guard let container = DependencyEnvironment.container else {
+            fatalError("❌ InjectContainer not set in DependencyEnvironment")
         }
         self.wrappedValue = container.resolve(T.self)
     }
@@ -24,8 +24,8 @@ public final class LazyDependency<T>: @unchecked Sendable where T: Sendable {
     
     public var wrappedValue: T {
         if let value = value { return value }
-        guard let container = Environment.container else {
-            fatalError("❌ InjectContainer not set in InjectEnvironment")
+        guard let container = DependencyEnvironment.container else {
+            fatalError("❌ InjectContainer not set in DependencyEnvironment")
         }
         let resolved = container.resolve(T.self)
         self.value = resolved

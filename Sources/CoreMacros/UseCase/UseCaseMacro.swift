@@ -22,10 +22,11 @@ enum UseCaseMacroError: CustomStringConvertible, Error {
 
 public struct UseCaseMacro: MemberMacro {
     public static func expansion(
-        of node: SwiftSyntax.AttributeSyntax,
-        providingMembersOf declaration: some SwiftSyntax.DeclGroupSyntax,
-        in context: some SwiftSyntaxMacros.MacroExpansionContext
-    ) throws -> [SwiftSyntax.DeclSyntax] {
+        of node: AttributeSyntax,
+        providingMembersOf declaration: some DeclGroupSyntax,
+        conformingTo protocols: [TypeSyntax],
+        in context: some MacroExpansionContext
+    ) throws -> [DeclSyntax] {
         let functionDeclarations = declaration.memberBlock.members.compactMap { $0.decl.as(FunctionDeclSyntax.self) }
         
         guard var executeFunctionDeclaration = functionDeclarations.first(where: { $0.name.text == "execute" })
