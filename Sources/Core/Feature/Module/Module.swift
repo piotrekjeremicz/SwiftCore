@@ -15,16 +15,6 @@ public protocol Module {
 
 public extension Module {
     func resolve(with container: Container, coordinatorRegistrar: CoordinatorRegistrar) {
-        assemblies.assemble(container: container, coordinatorRegistrar: coordinatorRegistrar)
+        assemblies.assemble(container: container)
     }
 }
-
-//public extension Module {
-//    func runAssemble(container: InjectContainer) {
-//        assemblies.forEach { $0.assemble(container: container) }
-//    }
-//    
-//    func runLoad(resolver: InjectResolver) {
-//        assemblies.forEach { $0.load(resolver: resolver) }
-//    }
-//}

@@ -6,7 +6,7 @@
 //
 
 public protocol Assembly {
-    func assemble(container: Container, coordinatorRegistrar: CoordinatorRegistrar)
+    func assemble(container: Container)
 
     func register(in container: Container)
     func registerStores(in registrar: StoreRegistrar)
@@ -16,12 +16,12 @@ public protocol Assembly {
 }
 
 public extension Assembly {
-    func assemble(container: Container, coordinatorRegistrar: CoordinatorRegistrar) {
+    func assemble(container: Container) {
         register(in: container)
         registerStores(in: .init(container: container))
         registerRepositories(in: .init(container: container))
         registerUseCases(in: .init(container: container))
-        registerCoordinator(in: coordinatorRegistrar)
+        registerCoordinator(in: container.resolve())
     }
     
     func register(in container: Container) { }
