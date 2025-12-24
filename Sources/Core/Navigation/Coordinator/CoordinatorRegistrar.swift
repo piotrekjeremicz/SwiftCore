@@ -14,8 +14,8 @@ public final class CoordinatorRegistrar: @unchecked Sendable {
         container[definition.id] = definition
     }
 
-    public func resolve(_ key: Key) -> Definition? {
-        container[key]
+    public func resolve(_ key: Key) -> Definition {
+        container[key] ?? .emptyDefinition
     }
 
     public func resolve(for location: Location) -> [Definition] {
@@ -81,3 +81,14 @@ public extension CoordinatorRegistrar {
     }
 }
 
+extension CoordinatorRegistrar.Definition {
+    static let emptyDefinition = CoordinatorRegistrar.Definition(
+        .empty,
+        title: "Empty",
+        content: { EmptyView() }
+    )
+}
+
+private extension CoordinatorRegistrar.Key {
+    static let empty = Self(rawValue: "empty")
+}
