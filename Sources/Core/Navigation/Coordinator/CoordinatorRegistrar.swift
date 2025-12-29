@@ -15,7 +15,7 @@ public final class CoordinatorRegistrar: @unchecked Sendable {
     }
 
     public func resolve(_ key: Key) -> Definition {
-        container[key] ?? .emptyDefinition
+        container[key] ?? .missingDefinition(for: key)
     }
 
     public func resolve(for location: Location) -> [Definition] {
@@ -82,11 +82,13 @@ public extension CoordinatorRegistrar {
 }
 
 extension CoordinatorRegistrar.Definition {
-    static let emptyDefinition = CoordinatorRegistrar.Definition(
-        .empty,
-        title: "Empty",
-        content: { EmptyView() }
-    )
+    static func missingDefinition(for key: CoordinatorRegistrar.Key) -> CoordinatorRegistrar.Definition {
+        CoordinatorRegistrar.Definition(
+            .empty,
+            title: "Missing Definition",
+            content: { Text("⚠️ Can't find \(key.rawValue) coordinator") }
+        )
+    }
 }
 
 private extension CoordinatorRegistrar.Key {

@@ -7,7 +7,7 @@
 
 @MainActor
 public protocol Destinable: AnyObject, Sendable {
-    associatedtype Destination: Identifiable, Sendable
+    associatedtype Destination: Navigation
     
     var destination: Destination? { get set }
     
