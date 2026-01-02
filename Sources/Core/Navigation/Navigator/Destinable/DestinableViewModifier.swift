@@ -42,7 +42,7 @@ struct DestinableViewModifier<Navigator, Destination>: ViewModifier where Naviga
                 }
             )
             .onChange(of: navigator.destination) { _, newValue in
-                guard let presentationStyle = newValue?.prefferedPresentationStyle else {
+                guard let presentationStyle = newValue?.preferredPresentationStyle else {
                     isSheetPresented = false
                     isFullScreenCoverPresented = false
                     return

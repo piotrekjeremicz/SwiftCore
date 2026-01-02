@@ -6,13 +6,13 @@
 //
 
 public protocol Navigation: Hashable, Identifiable, Sendable {
-    var prefferedPresentationStyle: PresentationStyle { get }
+    var preferredPresentationStyle: PresentationStyle { get }
 }
 
 public extension Navigation {
     var id: Self { self }
 
-    var prefferedPresentationStyle: PresentationStyle { .automatic }
+    var preferredPresentationStyle: PresentationStyle { .automatic }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)

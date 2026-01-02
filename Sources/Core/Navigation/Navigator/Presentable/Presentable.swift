@@ -12,7 +12,12 @@ public protocol Presentable: AnyObject, Sendable {
     var presentableItem: PresentableItem? { get set }
     var isPresentableVisible: Bool { get set }
 
-    func present<Model, Actions>(_ model: Model, withAnimation enabled: Bool, @ViewBuilder actions: (Model) -> Actions) where Model: PresentableModel, Actions: View
+    func present<Model, Actions>(
+        _ model: Model,
+        withAnimation enabled: Bool,
+        @ViewBuilder actions: (Model) -> Actions
+    ) where Model: PresentableModel, Actions: View
+
     func present<Model>(_ model: Model, withAnimation enabled: Bool) where Model: PresentableModel
     func dismissPresenter(withAnimation enabled: Bool)
 }
