@@ -18,14 +18,14 @@ public protocol Assembly {
 
 public extension Assembly {
     func assemble(container: Container) {
-        register(in: container)
         registerStores(in: .init(container: container))
         registerServices(in: .init(container: container))
         registerRepositories(in: .init(container: container))
         registerUseCases(in: .init(container: container))
         registerCoordinator(in: container.resolve())
+        register(in: container)
     }
-    
+
     func register(in container: Container) { }
     func registerStores(in registrar: StoreRegistrar) { }
     func registerServices(in registrar: ServiceRegistrar) { }

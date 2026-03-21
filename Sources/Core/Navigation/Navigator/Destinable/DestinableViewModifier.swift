@@ -25,6 +25,7 @@ struct DestinableViewModifier<Navigator, Destination>: ViewModifier where Naviga
                 content: {
                     if let destination = navigator.destination {
                         destinationContent(destination)
+                            .id(destination)
                     } else {
                         EmptyView()
                     }
@@ -36,6 +37,7 @@ struct DestinableViewModifier<Navigator, Destination>: ViewModifier where Naviga
                 content: {
                     if let destination = navigator.destination {
                         destinationContent(destination)
+                            .id(destination)
                     } else {
                         EmptyView()
                     }

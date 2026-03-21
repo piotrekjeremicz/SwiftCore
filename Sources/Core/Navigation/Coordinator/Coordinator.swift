@@ -10,7 +10,7 @@ import SwiftUI
 @MainActor
 public protocol Coordinator: View {
     associatedtype Root: View
-    var root: Root { get }
+    @ViewBuilder @MainActor var root: Root { get }
 }
 
 public extension Coordinator {
