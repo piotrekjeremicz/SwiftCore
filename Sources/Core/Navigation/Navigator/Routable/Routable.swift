@@ -5,8 +5,9 @@
 //  Created by Piotrek Jeremicz on 05.09.2024.
 //
 
+@MainActor
 public protocol Routable: AnyObject, Sendable {
-    associatedtype Route: Identifiable, Sendable
+    associatedtype Route: Hashable, Identifiable, Sendable
     
     var route: [Route] { get set }
     
