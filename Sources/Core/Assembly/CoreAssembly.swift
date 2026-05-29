@@ -12,5 +12,9 @@ public final class CoreAssembly {
         container.register(CoordinatorRegistrar.self, scope: .singleton) { _ in
             CoordinatorRegistrar()
         }
+
+        container.register(DeeplinkRegistrar.self, scope: .singleton) { _ in
+            DeeplinkRegistrar()
+        }
     }
 }

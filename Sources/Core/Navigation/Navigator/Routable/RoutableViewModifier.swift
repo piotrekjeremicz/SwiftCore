@@ -17,6 +17,7 @@ struct RoutableViewModifier<Navigator, Destination>: ViewModifier where Navigato
     public func body(content: Content) -> some View {
         content.navigationDestination(for: Navigator.Route.self) { item in
             routeContent(item)
+                .environment(\.deeplinkType, .stack)
         }
     }
 }

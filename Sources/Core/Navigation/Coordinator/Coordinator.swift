@@ -25,15 +25,17 @@ public extension Coordinator {
     @ViewBuilder
     var body: some View {
         if Navigator.self == Never.self {
-            root
+            root.deeplinkRegistrar(register: self)
         } else if let routable = navigator as? any (Routable & Observable) {
             makeRoutableStack(navigator: routable) {
                 root
             }
+            .deeplinkRegistrar(register: self)
         } else {
             NavigationStack {
                 root
             }
+            .deeplinkRegistrar(register: self)
         }
     }
 }
