@@ -35,10 +35,11 @@ struct DeeplinkRegistrarModifier: ViewModifier {
     }
 
     func body(content: Content) -> some View {
+        let fullKey = identifier.map { "\(key):\($0)" } ?? key
         content
             .onAppear(perform: deeplinkRegistration)
             .onDisappear(perform: deeplinkRemoval)
-            .environment(\.deeplinkKey, key)
+            .environment(\.deeplinkKey, fullKey)
     }
 }
 
