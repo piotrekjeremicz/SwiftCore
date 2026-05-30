@@ -12,13 +12,13 @@ public final class DeeplinkRegistrar: @unchecked Sendable {
         path.joined(separator: "/")
     }
 
-    func registrer(_ key: String, for type: DeeplinkType) {
+    func registrer(_ key: String, identifier: String? = nil, for type: DeeplinkType) {
         print("[Deeplink] Registering: \(key), type: \(type)")
         path.append(key)
         print("[Deeplink] Current path: \(relativePath)")
     }
 
-    func unregister(_ key: String) {
+    func unregister(_ key: String, identifier: String? = nil) {
         print("[Deeplink] Removing: \(key)")
         if path.last == key {
             path.removeLast()

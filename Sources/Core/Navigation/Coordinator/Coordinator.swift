@@ -9,15 +9,25 @@ import SwiftUI
 
 @MainActor
 public protocol Coordinator: View {
-    associatedtype Navigator = Never
     associatedtype Root: View
+    associatedtype Navigator = Never
+    associatedtype Payload: Core.Payload = Never
 
+    var payload: Payload? { get }
     var navigator: Navigator { get }
     @ViewBuilder @MainActor var root: Root { get }
+
+    init(payload: Payload?)
 }
 
 public extension Coordinator where Navigator == Never {
     var navigator: Never { fatalError("Navigator is Never") }
+}
+
+public extension Coordinator where Payload == Never {
+    var payload: Payload? { fatalError("Payload is Never") }
+    
+    init(payload: Payload?) { fatalError("Payload is Never") }
 }
 
 public extension Coordinator {

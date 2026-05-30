@@ -9,20 +9,29 @@ import SwiftUI
 
 struct DeeplinkRegistrarModifier: ViewModifier {
     let key: String
+    let identifier: String?
 
     @Environment(\.deeplinkType) private var deeplinkType
     @Dependency private var registrar: DeeplinkRegistrar
 
     init(register key: String) {
         self.key = key
+        identifier = nil
     }
 
     init<C: Coordinator>(register coordinator: C) {
         key = DeeplinkRegistrarModifier.createKey(for: coordinator)
+
+        if C.Payload.self != Never.self, let payload = coordinator.payload {
+            identifier = payload.id
+        } else {
+            identifier = nil
+        }
     }
 
     init<V: View>(register view: V) {
         key = DeeplinkRegistrarModifier.createKey(for: view)
+        identifier = nil
     }
 
     func body(content: Content) -> some View {
@@ -35,11 +44,11 @@ struct DeeplinkRegistrarModifier: ViewModifier {
 
 private extension DeeplinkRegistrarModifier {
     func deeplinkRegistration() {
-        registrar.registrer(key, for: deeplinkType)
+        registrar.registrer(key, identifier: identifier, for: deeplinkType)
     }
 
     func deeplinkRemoval() {
-        registrar.unregister(key)
+        registrar.unregister(key, identifier: identifier)
     }
 }
 
