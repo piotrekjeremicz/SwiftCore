@@ -9,7 +9,7 @@ import SwiftUI
 
 enum DeeplinkType {
     case root
-    case stack
+    case stack(in: String)
     case attached(to: String)
     case stale
 }

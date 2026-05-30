@@ -13,6 +13,10 @@ struct DeeplinkRegistrarModifier: ViewModifier {
     @Environment(\.deeplinkType) private var deeplinkType
     @Dependency private var registrar: DeeplinkRegistrar
 
+    init(register key: String) {
+        self.key = key
+    }
+
     init<C: Coordinator>(register coordinator: C) {
         key = DeeplinkRegistrarModifier.createKey(for: coordinator)
     }
@@ -73,6 +77,12 @@ extension View {
     func deeplinkRegistrar<C: Coordinator>(register coordinator: C) -> some View {
         modifier(
             DeeplinkRegistrarModifier(register: coordinator)
+        )
+    }
+
+    func deeplinkRegistrar(register key: String) -> some View {
+        modifier(
+            DeeplinkRegistrarModifier(register: key)
         )
     }
 }

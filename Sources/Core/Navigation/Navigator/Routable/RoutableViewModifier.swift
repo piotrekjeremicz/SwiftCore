@@ -12,12 +12,15 @@ struct RoutableViewModifier<Navigator, Destination>: ViewModifier where Navigato
 
     let onDismiss: VoidClosure?
     let routeContent: RouteContent
+
     @Binding var navigator: Navigator
+    @Environment(\.deeplinkKey) private var deeplinkKey
 
     public func body(content: Content) -> some View {
         content.navigationDestination(for: Navigator.Route.self) { item in
             routeContent(item)
-                .environment(\.deeplinkType, .stack)
+                .deeplinkRegistrar(register: "\(item)")
+                .environment(\.deeplinkType, .stack(in: deeplinkKey))
         }
     }
 }

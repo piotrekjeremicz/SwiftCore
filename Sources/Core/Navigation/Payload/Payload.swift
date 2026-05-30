@@ -5,7 +5,7 @@
 //  Created by Piotrek Jeremicz on 26.02.2026.
 //
 
-public protocol Payload: Hashable, Equatable, Sendable {}
+public protocol Payload: Identifiable, Hashable, Equatable, Sendable {}
 
 public typealias AnyPayload = any Payload
 
