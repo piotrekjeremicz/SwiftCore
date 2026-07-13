@@ -16,5 +16,9 @@ public final class CoreAssembly {
         container.register(DeeplinkRegistrar.self, scope: .singleton) { _ in
             DeeplinkRegistrar()
         }
+
+        container.register(FeatureFlagRemoteSource.self, scope: .singleton) { _ in
+            EmptyFeatureFlagRemoteSource()
+        }
     }
 }
