@@ -12,11 +12,7 @@ public struct FeatureFlagValues: Sendable {
         self.environment = environment
     }
 
-    public func flag<Flag: FeatureFlag>(
-        @FeatureFlagVariantBuilder<Flag> _ variants: () -> [FeatureFlagVariant<Flag>]
-    ) -> Flag {
-        let variants = variants()
-
+    public func flag<Flag: FeatureFlag>(_ variants: FeatureFlagVariant<Flag>...) -> Flag {
         if let match = variants.first(where: { $0.environment == environment }) {
             return match.flag
         }
