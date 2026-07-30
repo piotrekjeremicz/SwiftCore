@@ -6,8 +6,9 @@
 //
 
 public protocol AppEntity: Sendable {
+    var build: String { get }
     var version: String { get }
 
     var bundleId: String { get }
-    var groupBundleId: String { get }    
+    var groupBundleId: String { get }
 }
