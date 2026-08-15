@@ -1,11 +1,11 @@
 //
-//  AppEntity.swift
+//  AppIdentity.swift
 //  Core
 //
 //  Created by Piotrek Jeremicz on 28.10.2025.
 //
 
-public protocol AppEntity: Sendable {
+public protocol AppIdentity: Sendable {
     var build: String { get }
     var version: String { get }
 
