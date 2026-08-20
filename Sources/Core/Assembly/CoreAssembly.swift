@@ -17,6 +17,10 @@ public final class CoreAssembly {
             DeeplinkRegistrar()
         }
 
+        container.register(DeeplinkRouter.self, scope: .singleton) { _ in
+            DeeplinkRouter()
+        }
+
         container.register(AppEnvironment.self, scope: .singleton) { _ in
             .undefined
         }

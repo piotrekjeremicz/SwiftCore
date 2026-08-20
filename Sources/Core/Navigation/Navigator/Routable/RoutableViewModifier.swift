@@ -33,12 +33,12 @@ struct RoutableViewModifier<Navigator, Destination>: ViewModifier where Navigato
         let commonCount = zip(oldRoute, newRoute).prefix(while: { $0.0 == $0.1 }).count
 
         for item in oldRoute[commonCount...].reversed() {
-//            registrar.unregister(DeeplinkSegment.key(for: item))
+            registrar.unregister(DeeplinkSegment.key(for: item))
         }
 
         for index in commonCount..<newRoute.count {
             let parentKey = index == 0 ? deeplinkParentKey : DeeplinkSegment.key(for: newRoute[index - 1])
-//            registrar.registrer(DeeplinkSegment.key(for: newRoute[index]), for: .stack(in: parentKey))
+            registrar.registrer(DeeplinkSegment.key(for: newRoute[index]), for: .stack(in: parentKey))
         }
     }
 }
