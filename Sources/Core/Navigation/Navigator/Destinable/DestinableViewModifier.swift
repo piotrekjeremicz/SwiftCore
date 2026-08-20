@@ -17,7 +17,7 @@ struct DestinableViewModifier<Navigator, Destination>: ViewModifier where Naviga
     @State private var isSheetPresented = false
     @State private var isFullScreenCoverPresented = false
 
-    @Environment(\.deeplinkKey) private var deeplinkKey
+    @Environment(\.deeplinkParentKey) private var deeplinkParentKey
 
     public func body(content: Content) -> some View {
         content
@@ -61,7 +61,7 @@ struct DestinableViewModifier<Navigator, Destination>: ViewModifier where Naviga
                     isFullScreenCoverPresented = false
                 }
             }
-            .environment(\.deeplinkType, .attached(to: deeplinkKey))
+            .environment(\.deeplinkType, .attached(to: deeplinkParentKey))
     }
 
     func performDismiss() {

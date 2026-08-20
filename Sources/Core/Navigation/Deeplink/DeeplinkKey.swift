@@ -2,11 +2,19 @@
 //  DeeplinkKey.swift
 //  Core
 //
-//  Created by Piotrek Jeremicz on 30/05/2026.
+//  Created by Piotrek Jeremicz on 18/08/2026.
 //
 
-import SwiftUI
+struct DeeplinkKey: CustomStringConvertible, Equatable {
+    let key: String
+    let identifier: String?
 
-extension EnvironmentValues {
-    @Entry var deeplinkKey: String = "*"
+    init(key: String, identifier: String? = nil) {
+        self.key = key
+        self.identifier = identifier
+    }
+
+    var description: String {
+        identifier.map { "\(key):\($0)" } ?? key
+    }
 }

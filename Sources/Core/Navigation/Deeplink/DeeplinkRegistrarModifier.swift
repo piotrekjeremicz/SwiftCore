@@ -8,78 +8,77 @@
 import SwiftUI
 
 struct DeeplinkRegistrarModifier: ViewModifier {
-    let key: String
-    let identifier: String?
+    let deeplinkKey: DeeplinkKey
+
+/////// CHECK
+    var resolve: ((_ key: String, _ payload: (any Payload)?, _ continuation: @escaping VoidClosure) -> DeeplinkCommand?)?
+    var unwind: ((_ continuation: @escaping VoidClosure) -> Void)?
+///////
 
     @Environment(\.deeplinkType) private var deeplinkType
     @Dependency private var registrar: DeeplinkRegistrar
 
-    init(register key: String) {
-        self.key = key
-        identifier = nil
+    init(register key: String, identifier: String? = nil) {
+        deeplinkKey = .init(key: key, identifier: identifier)
     }
 
     init<C: Coordinator>(register coordinator: C) {
-        key = DeeplinkRegistrarModifier.createKey(for: coordinator)
+        deeplinkKey = DeeplinkKey(
+            key: coordinator.key,
+            identifier: coordinator.identifier
+        )
 
-        if C.Payload.self != Never.self, let payload = coordinator.payload {
-            identifier = payload.id
-        } else {
-            identifier = nil
+///////// CHECK
+        unwind = DeeplinkRegistrarModifier.unwindClosure(for: coordinator)
+
+        if let resolving = coordinator as? any DeeplinkResolving {
+            resolve = { key, payload, continuation in
+                resolving.deeplinkCommand(for: key, payload: payload, then: continuation)
+            }
         }
-    }
-
-    init<V: View>(register view: V) {
-        key = DeeplinkRegistrarModifier.createKey(for: view)
-        identifier = nil
+/////////
     }
 
     func body(content: Content) -> some View {
-        let fullKey = identifier.map { "\(key):\($0)" } ?? key
         content
             .onAppear(perform: deeplinkRegistration)
             .onDisappear(perform: deeplinkRemoval)
-            .environment(\.deeplinkKey, fullKey)
+            .environment(\.deeplinkParentKey, deeplinkKey.description)
     }
 }
 
 private extension DeeplinkRegistrarModifier {
     func deeplinkRegistration() {
-        registrar.registrer(key, identifier: identifier, for: deeplinkType)
+        registrar.registrer(deeplinkKey, for: deeplinkType, resolve: resolve, unwind: unwind)
     }
 
     func deeplinkRemoval() {
-        registrar.unregister(key, identifier: identifier)
+        registrar.unregister(deeplinkKey)
     }
 }
 
 private extension DeeplinkRegistrarModifier {
-    static func createKey<C: Coordinator>(for coordinator: C) -> String {
-        let name = "\(type(of: coordinator))".replacingOccurrences(of: "Coordinator", with: "")
-        
-        return name.unicodeScalars.reduce(into: "") { result, scalar in
-            if CharacterSet.uppercaseLetters.contains(scalar) {
-                if !result.isEmpty { result += "-" }
-                result += String(scalar).lowercased()
-            } else {
-                result += String(scalar)
-            }
+    /// `nil` when `C.Navigator == Never` (no navigator to unwind) or when the navigator is
+    /// neither `Destinable` nor `Routable`.
+    static func unwindClosure<C: Coordinator>(for coordinator: C) -> ((@escaping VoidClosure) -> Void)? {
+        guard C.Navigator.self != Never.self else { return nil }
+
+        if let destinable = coordinator.navigator as? any Destinable {
+            return { continuation in destinable.dismiss(completion: continuation) }
         }
+        if let routable = coordinator.navigator as? any Routable {
+            return { continuation in routable.popToRoot(completion: continuation) }
+        }
+        return nil
     }
+}
 
-    static func createKey<V: View>(for view: V) -> String {
-        let suffixes = ["PageView", "View"]
-        let typeName = "\(type(of: view))"
-        let name = suffixes.reduce(typeName) { $0.replacingOccurrences(of: $1, with: "") }
-
-        return name.unicodeScalars.reduce(into: "") { result, scalar in
-            if CharacterSet.uppercaseLetters.contains(scalar) {
-                if !result.isEmpty { result += "-" }
-                result += String(scalar).lowercased()
-            } else {
-                result += String(scalar)
-            }
-        }
+private extension DeeplinkRegistrarModifier {
+    ////// CHEKC BOTH
+    static func createKey<C: Coordinator>(for coordinator: C) -> String {
+        "\(type(of: coordinator))"
+            .replacingOccurrences(of: "Coordinator", with: "")
+            .kebabCased
     }
 }
 

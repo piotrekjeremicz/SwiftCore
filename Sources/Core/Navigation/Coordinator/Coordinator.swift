@@ -13,11 +13,30 @@ public protocol Coordinator: View {
     associatedtype Navigator = Never
     associatedtype Payload: Core.Payload = Never
 
+    var key: String { get }
     var payload: Payload? { get }
+    var identifier: String? { get }
     var navigator: Navigator { get }
+
     @ViewBuilder @MainActor var root: Root { get }
 
     init(payload: Payload?)
+}
+
+public extension Coordinator {
+    var key: String {
+        "\(type(of: self))"
+            .replacingOccurrences(of: "Coordinator", with: "")
+            .kebabCased
+    }
+
+    var identifier: String? {
+        if Payload.self != Never.self, let payload = payload {
+            "\(payload.id)"
+        } else {
+            nil
+        }
+    }
 }
 
 public extension Coordinator where Navigator == Never {
